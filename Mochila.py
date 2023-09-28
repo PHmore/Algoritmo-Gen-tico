@@ -4,15 +4,19 @@ import random
 pesos = [2, 3, 4, 5, 9]  # Pesos dos livros
 valores = [3, 4, 8, 8, 10]  # Preço dos livros
 capacidade_mochila = 20
-tamanho_populacao = 10  # Número de indivíduos (cromossomos) por população
+tamanho_populacao = 6  # Número de indivíduos (cromossomos) por população
 taxa_mutacao = 0.1
 geracoes = 100
 
 
 # Função de fitness (adaptabilidade)
 def fitness(cromossomo):
-    soma_pesos = sum(pesos[i] for i in range(len(cromossomo)) if cromossomo[i])
-    soma_valores = sum(valores[i] for i in range(len(cromossomo)) if cromossomo[i])
+    soma_pesos = soma_valores = 0
+    for d in range(len(cromossomo)):
+        if cromossomo[d] == 1:
+            soma_pesos += pesos[d]
+            soma_valores += valores[d]
+
     if soma_pesos > capacidade_mochila:
         return 0
     else:
@@ -42,7 +46,7 @@ for geracao in range(geracoes):
     populacao = sorted(populacao, key=lambda x: fitness(x), reverse=True)
     nova_populacao = []
 
-    # Elitismo: mantém os melhores indivíduos
+    # Mantém os melhores cromossomos
     nova_populacao.extend(populacao[:2])
 
     # Geração de novos indivíduos através de crossover e mutação
@@ -57,11 +61,19 @@ for geracao in range(geracoes):
 
     populacao = nova_populacao
 
-# Obtendo o melhor indivíduo após as gerações
-melhor_individuo = max(populacao, key=fitness)
-melhor_individuo = [1 if gene else 0 for gene in melhor_individuo]
+# Obtendo o melhor cromossomo após as gerações
+melhor_cromossomo = max(populacao, key=fitness)
+melhor_cromossomo = [1 if gene else 0 for gene in melhor_cromossomo]
+
+# Cálculo do total de peso e valor dos livros selecionados geneticamente
+valor_total = peso_total = 0
+for c in range(len(melhor_cromossomo)):
+    if melhor_cromossomo[c] == 1:
+        valor_total +=valores[c]
+        peso_total += pesos[c]
 
 # Exibindo resultados
-print("Melhor Indivíduo:", melhor_individuo)
-print("Valor Total:", sum(valores[i] for i in range(len(melhor_individuo)) if melhor_individuo[i]))
-print("Peso Total:", sum(pesos[i] for i in range(len(melhor_individuo)) if melhor_individuo[i]))
+print(f"Melhor Indivíduo: {melhor_cromossomo}")
+print(f"Valor Total: {valor_total}")
+print(f"Peso Total: {peso_total}")
+
