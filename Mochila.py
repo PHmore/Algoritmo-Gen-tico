@@ -8,6 +8,7 @@ tamanho_populacao = 10
 taxa_mutacao = 0.1
 geracoes = 100
 
+
 # Função de fitness (adaptabilidade)
 def fitness(individuo):
     soma_pesos = sum(pesos[i] for i in range(len(individuo)) if individuo[i])
@@ -17,6 +18,7 @@ def fitness(individuo):
     else:
         return soma_valores
 
+
 # Função de crossover (cruzamento)
 def crossover(pai1, pai2):
     ponto_corte = random.randint(1, len(pai1)-1)
@@ -24,11 +26,13 @@ def crossover(pai1, pai2):
     filho2 = pai2[:ponto_corte] + pai1[ponto_corte:]
     return filho1, filho2
 
+
 # Função de mutação
 def mutacao(individuo):
     posicao = random.randint(0, len(individuo)-1)
     individuo[posicao] = not individuo[posicao]
     return individuo
+
 
 # Inicializando a população
 populacao = [[random.choice([0, 1]) for _ in range(len(pesos))] for _ in range(tamanho_populacao)]
