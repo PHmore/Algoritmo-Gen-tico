@@ -1,22 +1,35 @@
+from PySimpleGUI import PySimpleGUI as sg
 import random
+
+# Layout de janelas
+tela_parametros = [
+    [sg.Text('Pesos dos livros: '), sg.Input(key='pesos')],
+    [sg.Text('Valores dos livros: '), sg.Input(key='valores')],
+    [sg.Text('Capacidade da mochila: '), sg.Input(key='capacidade_mochila')],
+    [sg.Text('Taxa de mutação: '), sg.Input(key='taxa_mutacao')],
+    [sg.Text('Número de gerações: '), sg.Input(key='geracoes')]
+]
+
+janela_parametros = sg.Window('ALGORITMO GENÉTICO', layout=tela_parametros)
+while True:
+    e, v = janela_parametros.read()
+
+    if e == sg.WINDOW_CLOSED:
+        break
 
 # Definindo os parâmetros do problema
 pesos = [2, 3, 4, 5, 9]  # Pesos dos livros
 valores = [3, 4, 8, 8, 10]  # Preço dos livros
 capacidade_mochila = 20
-tamanho_populacao = 6  # Número de indivíduos (cromossomos) por população
+tamanho_populacao = 10  # Número de indivíduos (cromossomos) por população
 taxa_mutacao = 0.1
 geracoes = 100
 
 
 # Função de fitness (adaptabilidade)
 def fitness(cromossomo):
-    soma_pesos = soma_valores = 0
-    for d in range(len(cromossomo)):
-        if cromossomo[d] == 1:
-            soma_pesos += pesos[d]
-            soma_valores += valores[d]
-
+    soma_pesos = sum(pesos[i] for i in range(len(cromossomo)) if cromossomo[i])
+    soma_valores = sum(valores[i] for i in range(len(cromossomo)) if cromossomo[i])
     if soma_pesos > capacidade_mochila:
         return 0
     else:
@@ -46,7 +59,7 @@ for geracao in range(geracoes):
     populacao = sorted(populacao, key=lambda x: fitness(x), reverse=True)
     nova_populacao = []
 
-    # Mantém os melhores cromossomos
+    # Elitismo: mantém os melhores indivíduos
     nova_populacao.extend(populacao[:2])
 
     # Geração de novos indivíduos através de crossover e mutação
@@ -61,19 +74,11 @@ for geracao in range(geracoes):
 
     populacao = nova_populacao
 
-# Obtendo o melhor cromossomo após as gerações
-melhor_cromossomo = max(populacao, key=fitness)
-melhor_cromossomo = [1 if gene else 0 for gene in melhor_cromossomo]
-
-# Cálculo do total de peso e valor dos livros selecionados geneticamente
-valor_total = peso_total = 0
-for c in range(len(melhor_cromossomo)):
-    if melhor_cromossomo[c] == 1:
-        valor_total +=valores[c]
-        peso_total += pesos[c]
+# Obtendo o melhor indivíduo após as gerações
+melhor_individuo = max(populacao, key=fitness)
+melhor_individuo = [1 if gene else 0 for gene in melhor_individuo]
 
 # Exibindo resultados
-print(f"Melhor Indivíduo: {melhor_cromossomo}")
-print(f"Valor Total: {valor_total}")
-print(f"Peso Total: {peso_total}")
-
+print("Melhor Indivíduo:", melhor_individuo)
+print("Valor Total:", sum(valores[i] for i in range(len(melhor_individuo)) if melhor_individuo[i]))
+print("Peso Total:", sum(pesos[i] for i in range(len(melhor_individuo)) if melhor_individuo[i]))
