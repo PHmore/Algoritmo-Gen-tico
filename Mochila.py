@@ -1,18 +1,18 @@
 import random
 
 # Definindo os parâmetros do problema
-pesos = [2, 3, 4, 5, 9]
-valores = [3, 4, 8, 8, 10]
+pesos = [2, 3, 4, 5, 9]  # Pesos dos livros
+valores = [3, 4, 8, 8, 10]  # Preço dos livros
 capacidade_mochila = 20
-tamanho_populacao = 10
+tamanho_populacao = 10  # Número de indivíduos (cromossomos) por população
 taxa_mutacao = 0.1
 geracoes = 100
 
 
 # Função de fitness (adaptabilidade)
-def fitness(individuo):
-    soma_pesos = sum(pesos[i] for i in range(len(individuo)) if individuo[i])
-    soma_valores = sum(valores[i] for i in range(len(individuo)) if individuo[i])
+def fitness(cromossomo):
+    soma_pesos = sum(pesos[i] for i in range(len(cromossomo)) if cromossomo[i])
+    soma_valores = sum(valores[i] for i in range(len(cromossomo)) if cromossomo[i])
     if soma_pesos > capacidade_mochila:
         return 0
     else:
@@ -59,6 +59,7 @@ for geracao in range(geracoes):
 
 # Obtendo o melhor indivíduo após as gerações
 melhor_individuo = max(populacao, key=fitness)
+melhor_individuo = [1 if gene else 0 for gene in melhor_individuo]
 
 # Exibindo resultados
 print("Melhor Indivíduo:", melhor_individuo)
