@@ -2,7 +2,7 @@ from PySimpleGUI import PySimpleGUI as sg
 import random
 
 
-def converter_int(string):
+def converter_int(string):  # Converte os elementos que foram lidos como string na interface em uma lista de inteiros
     lista_inteira = list()
     string = string.split(" ")
 
@@ -12,7 +12,7 @@ def converter_int(string):
     return lista_inteira
 
 
-# Função de fitness (adaptabilidade)
+# Função de fitness
 def fitness(cromossomo):
     soma_pesos = soma_valores = 0
     for d in range(len(cromossomo)):
@@ -26,7 +26,7 @@ def fitness(cromossomo):
         return soma_valores
 
 
-# Função de crossover (cruzamento)
+# Função de cruzamento genético
 def crossover(pai1, pai2):
     ponto_corte = random.randint(1, len(pai1)-1)
     filho1 = pai1[:ponto_corte] + pai2[ponto_corte:]
@@ -41,7 +41,7 @@ def mutacao(individuo):
     return individuo
 
 
-# Layout de janelas
+# Definição do layout da janela de inserção de dados
 tela_parametros = [
     [sg.Text('Pesos dos livros:'), sg.Push(), sg.Input(key='pesos')],
     [sg.Text('Valores dos livros:'), sg.Push(), sg.Input(key='valores')],
@@ -116,7 +116,18 @@ for c in range(len(melhor_cromossomo)):
         valor_total += valores[c]
         peso_total += pesos[c]
 
+# Definição de layout de tela de resultados
+tela_resultados = [
+    [sg.Text(f'Melhor Indivíduo: {melhor_cromossomo}')],
+    [sg.Text(f'Valor Total: {valor_total}')],
+    [sg.Text(f'Peso Total: {peso_total}')]
+]
+
 # Exibindo resultados
-print("Melhor Indivíduo:", melhor_cromossomo)
-print("Valor Total:", valor_total)
-print("Peso Total:", peso_total)
+janela_resultados = sg.Window('RESULTADOS', layout=tela_resultados)
+while True:
+    e, v = janela_resultados.read()
+
+    if e == sg.WINDOW_CLOSED:
+        break
+
