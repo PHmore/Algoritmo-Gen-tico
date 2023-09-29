@@ -107,6 +107,7 @@ for geracao in range(geracoes):
 
     populacao = nova_populacao
 
+
 # Obtendo o melhor cromossomo após as gerações
 melhor_cromossomo = max(populacao, key=fitness)
 melhor_cromossomo = [1 if gene else 0 for gene in melhor_cromossomo]
