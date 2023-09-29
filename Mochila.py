@@ -1,9 +1,13 @@
 from PySimpleGUI import PySimpleGUI as sg
 import random
 
+sg.theme('Reddit')
+
 
 def converter_int(string):  # Converte os elementos que foram lidos como string na interface em uma lista de inteiros
     lista_inteira = list()
+    if ',' in string:
+        string = string.replace(',', ' ')
     string = string.split(" ")
 
     for item in string:
@@ -64,9 +68,7 @@ janela_parametros = sg.Window('ALGORITMO GENÉTICO', layout=tela_parametros)
 while True:
     e, v = janela_parametros.read()
 
-    if e == sg.WINDOW_CLOSED:
-        break
-    if e == 'cancelar':
+    if e == sg.WINDOW_CLOSED or e == 'cancelar':
         janela_parametros.close()
         break
     if e == 'continuar':
@@ -120,7 +122,8 @@ for c in range(len(melhor_cromossomo)):
 tela_resultados = [
     [sg.Text(f'Melhor Indivíduo: {melhor_cromossomo}')],
     [sg.Text(f'Valor Total: {valor_total}')],
-    [sg.Text(f'Peso Total: {peso_total}')]
+    [sg.Text(f'Peso Total: {peso_total}')],
+    [sg.Push(), sg.Button('Sair'), sg.Push()]
 ]
 
 # Exibindo resultados
@@ -128,6 +131,6 @@ janela_resultados = sg.Window('RESULTADOS', layout=tela_resultados)
 while True:
     e, v = janela_resultados.read()
 
-    if e == sg.WINDOW_CLOSED:
+    if e == sg.WINDOW_CLOSED or e == 'Sair':
+        janela_resultados.close()
         break
-
