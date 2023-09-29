@@ -39,9 +39,7 @@ Se você quiser contribuir com melhorias ou correções, sinta-se à vontade par
 
 ## Autor
 
-[Inserir o seu nome e, se desejar, o seu contato ou outra informação relevante.]
-
-[Inserir qualquer outra informação adicional que você ache relevante.]
+Patryck Henryck Moreira Silva_@PHmore - patryckhenryck401@gmail.com
 
 ```
 
