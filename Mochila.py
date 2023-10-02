@@ -5,11 +5,6 @@ sg.theme('Reddit')
 
 
 def converter_int(string):  # Converte os elementos que foram lidos como string na interface em uma lista de inteiros
-
-    '''
-    Converte um inteiro
-    '''
-
     lista_inteira = list()
     if ',' in string:
         string = string.replace(',', ' ')
@@ -18,22 +13,22 @@ def converter_int(string):  # Converte os elementos que foram lidos como string 
     for item in string:
         lista_inteira.append(int(item))
 
-    print(lista_inteira)
     return lista_inteira
+
+
+def formatar_log(lista):
+    for i in lista:
+        for j in range(0, len(i)):
+            if i[j] is True:
+                i[j] = 1
+            elif i[j] is False:
+                i[j] = 0
 
 
 # Função onde recebe o cromossomo ler os genes e retorna o FITNESS
 def fitness(cromossomo):
-
-    '''
-    Converte um inteiro
-    '''
-
     soma_pesos = soma_valores = 0
     for d in range(len(cromossomo)):
-        print (d)
-        print (cromossomo)
-        print (pesos)
         if cromossomo[d] == 1:
             soma_pesos += pesos[d]
             soma_valores += valores[d]
@@ -46,11 +41,6 @@ def fitness(cromossomo):
 
 # Função de cruzamento genético
 def crossover(pai1, pai2):
-
-    '''
-    Converte um inteiro
-    '''
-
     ponto_corte = random.randint(1, len(pai1)-1)
     filho1 = pai1[:ponto_corte] + pai2[ponto_corte:]
     filho2 = pai2[:ponto_corte] + pai1[ponto_corte:]
@@ -59,11 +49,6 @@ def crossover(pai1, pai2):
 
 # Função de mutação
 def mutacao(individuo):
-
-    '''
-    Converte um inteiro
-    '''
-
     posicao = random.randint(0, len(individuo)-1)
     individuo[posicao] = not individuo[posicao]
     return individuo
@@ -119,20 +104,18 @@ log_layout = [
 ]
 
 janela_logs = sg.Window('LOG', layout=log_layout)
-
 log = []
 
 pesos = converter_int(pesos)
 valores = converter_int(valores)
 
 # Inicializando a população
-print(f'Printando pesos', pesos)
 populacao = [[random.choice([0, 1]) for _ in range(len(pesos))] for _ in range(tamanho_populacao)]
 
 # Algoritmo genético
 for geracao in range(geracoes):
-    log.append(f'populacao: {populacao} geracao: {geracao}')
-    print(f'populacao: {populacao} geracao: {geracao}')
+    formatar_log(populacao)
+    log.append(f'- População da geração {geracao}:\n {populacao}\n')
 
     event, values = Carregamento.read(timeout=1)  # Adiciona timeout para evitar bloqueio
     Carregamento.refresh()
@@ -178,18 +161,17 @@ tela_resultados = [
     [sg.Text(f'Melhor Indivíduo: {melhor_cromossomo}')],
     [sg.Text(f'Valor Total: {valor_total}')],
     [sg.Text(f'Peso Total: {peso_total}')],
-    [sg.Push(), sg.Button('Sair'), sg.Push(),sg.Button('Mostrar/Esconder Log')],
-    [sg.Multiline(size=(60, 10), key='-LOG-',visible = False, autoscroll=True)]
+    [sg.Push(), sg.Button('Sair'), sg.Push(), sg.Button('Mostrar/Esconder Log'), sg.Push()],
+    [sg.Multiline(size=(60, 10), key='-LOG-', visible=False, autoscroll=True)]
 ]
 
 # Exibindo resultados
 janela_resultados = sg.Window('RESULTADOS', layout=tela_resultados)
 
-
 log_visible = False
 
 while True:
-    e, v = janela_resultados.read(timeout=0.1)
+    e, v = janela_resultados.read(timeout=1)
     if e == sg.WINDOW_CLOSED or e == 'Sair':
         janela_resultados.close()
         break
