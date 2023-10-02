@@ -5,6 +5,14 @@ sg.theme('Reddit')
 
 
 def converter_int(string):  # Converte os elementos que foram lidos como string na interface em uma lista de inteiros
+
+    """
+    A função converte a lista de strings lida como entrada pela interface em uma lista de inteiros, para que os cálculos
+    sejam realizados.
+    :param string: lista de strings lida como entrada (string)
+    :return: retorna a lista de strings convertida para lista de inteiros
+    """
+
     lista_inteira = list()
     if ',' in string:
         string = string.replace(',', ' ')
@@ -17,6 +25,13 @@ def converter_int(string):  # Converte os elementos que foram lidos como string 
 
 
 def formatar_log(lista):
+
+    """
+    Formata a lista log, cuja função é registrar a população das gerações do algoritmo genético
+    :param lista: a lista de população
+    :return:
+    """
+
     for i in lista:
         for j in range(0, len(i)):
             if i[j] is True:
@@ -27,6 +42,14 @@ def formatar_log(lista):
 
 # Função onde recebe o cromossomo ler os genes e retorna o FITNESS
 def fitness(cromossomo):
+
+    """
+    Faz o cálculo de aptidão do cromossomo passado como parâmetro, para que ao final os melhores cromossomos sejam
+    selecionados para crossover.
+    :param cromossomo: um elemento da população
+    :return: 0, caso não seja um bom cromossomo; retorna a soma dos valores caso seja um bom cromossomo
+    """
+
     soma_pesos = soma_valores = 0
     for d in range(len(cromossomo)):
         if cromossomo[d] == 1:
@@ -41,6 +64,14 @@ def fitness(cromossomo):
 
 # Função de cruzamento genético
 def crossover(pai1, pai2):
+
+    """
+    Faz a mistura de genes
+    :param pai1: primeira lista de genes
+    :param pai2: segunda lista de genes
+    :return: retorna as duas listas com genes misturados
+    """
+
     ponto_corte = random.randint(1, len(pai1)-1)
     filho1 = pai1[:ponto_corte] + pai2[ponto_corte:]
     filho2 = pai2[:ponto_corte] + pai1[ponto_corte:]
@@ -49,6 +80,13 @@ def crossover(pai1, pai2):
 
 # Função de mutação
 def mutacao(individuo):
+
+    """
+    Escolhe uma alelo aleatório para fazer mutação
+    :param individuo: cromossomo a ser mutado
+    :return: retorna o cromossomo com a mutação
+    """
+
     posicao = random.randint(0, len(individuo)-1)
     individuo[posicao] = not individuo[posicao]
     return individuo
