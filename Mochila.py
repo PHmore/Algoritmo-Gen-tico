@@ -18,6 +18,8 @@
 
 #* Resolver erro aparecendo ao fechar ou cancelar: resolvido utilizando exit()
 
+#! Consertar identação no aparecimento do log
+
 from PySimpleGUI import PySimpleGUI as sg
 import random
 
