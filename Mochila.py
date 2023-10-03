@@ -5,6 +5,14 @@ sg.theme('Reddit')
 
 
 def converter_int(string):  # Converte os elementos que foram lidos como string na interface em uma lista de inteiros
+
+    """
+    A função converte a lista de strings lida como entrada pela interface em uma lista de inteiros, para que os cálculos
+    sejam realizados.
+    :param string: lista de strings lida como entrada (string)
+    :return: retorna a lista de strings convertida para lista de inteiros
+    """
+
     lista_inteira = list()
     if ',' in string:
         string = string.replace(',', ' ')
@@ -16,8 +24,32 @@ def converter_int(string):  # Converte os elementos que foram lidos como string 
     return lista_inteira
 
 
-# Função de fitness
+def formatar_log(lista):
+
+    """
+    Formata a lista log, cuja função é registrar a população das gerações do algoritmo genético
+    :param lista: a lista de população
+    :return:
+    """
+
+    for i in lista:
+        for j in range(0, len(i)):
+            if i[j] is True:
+                i[j] = 1
+            elif i[j] is False:
+                i[j] = 0
+
+
+# Função onde recebe o cromossomo ler os genes e retorna o FITNESS
 def fitness(cromossomo):
+
+    """
+    Faz o cálculo de aptidão do cromossomo passado como parâmetro, para que ao final os melhores cromossomos sejam
+    selecionados para crossover.
+    :param cromossomo: um elemento da população
+    :return: 0, caso não seja um bom cromossomo; retorna a soma dos valores caso seja um bom cromossomo
+    """
+
     soma_pesos = soma_valores = 0
     for d in range(len(cromossomo)):
         if cromossomo[d] == 1:
@@ -32,6 +64,14 @@ def fitness(cromossomo):
 
 # Função de cruzamento genético
 def crossover(pai1, pai2):
+
+    """
+    Faz a mistura de genes
+    :param pai1: primeira lista de genes
+    :param pai2: segunda lista de genes
+    :return: retorna as duas listas com genes misturados
+    """
+
     ponto_corte = random.randint(1, len(pai1)-1)
     filho1 = pai1[:ponto_corte] + pai2[ponto_corte:]
     filho2 = pai2[:ponto_corte] + pai1[ponto_corte:]
@@ -40,6 +80,13 @@ def crossover(pai1, pai2):
 
 # Função de mutação
 def mutacao(individuo):
+
+    """
+    Escolhe uma alelo aleatório para fazer mutação
+    :param individuo: cromossomo a ser mutado
+    :return: retorna o cromossomo com a mutação
+    """
+
     posicao = random.randint(0, len(individuo)-1)
     individuo[posicao] = not individuo[posicao]
     return individuo
@@ -70,7 +117,7 @@ while True:
 
     if e == sg.WINDOW_CLOSED or e == 'cancelar':
         janela_parametros.close()
-        break
+        exit()
     if e == 'continuar':
         pesos = v['pesos'][:]
         valores = v['valores'][:]
@@ -81,6 +128,22 @@ while True:
         janela_parametros.close()
         break
 
+# Barra de progresso
+tela_aguarde = [
+    [sg.Text('Progresso')],
+    [sg.ProgressBar(geracoes, orientation='h', size=(20, 20), key='progressbar')]
+]
+
+Carregamento = sg.Window('Barra de Progresso', tela_aguarde)
+
+# Janela de histórico
+log_layout = [
+    [sg.Multiline(size=(60, 10), key='-LOG-', autoscroll=True)]
+]
+
+janela_logs = sg.Window('LOG', layout=log_layout)
+log = []
+
 pesos = converter_int(pesos)
 valores = converter_int(valores)
 
@@ -89,6 +152,15 @@ populacao = [[random.choice([0, 1]) for _ in range(len(pesos))] for _ in range(t
 
 # Algoritmo genético
 for geracao in range(geracoes):
+    formatar_log(populacao)
+    log.append(f'- População da geração {geracao}:\n {populacao}\n')
+
+    event, values = Carregamento.read(timeout=1)  # Adiciona timeout para evitar bloqueio
+    Carregamento.refresh()
+    if event == sg.WINDOW_CLOSED:
+        janela_parametros.close()
+        break
+
     populacao = sorted(populacao, key=lambda x: fitness(x), reverse=True)
     nova_populacao = []
 
@@ -104,9 +176,12 @@ for geracao in range(geracoes):
         if random.random() < taxa_mutacao:
             filho2 = mutacao(filho2)
         nova_populacao.extend([filho1, filho2])
+        
+    Carregamento['progressbar'].update(geracao+1)
 
     populacao = nova_populacao
 
+Carregamento.close()
 
 # Obtendo o melhor cromossomo após as gerações
 melhor_cromossomo = max(populacao, key=fitness)
@@ -124,14 +199,21 @@ tela_resultados = [
     [sg.Text(f'Melhor Indivíduo: {melhor_cromossomo}')],
     [sg.Text(f'Valor Total: {valor_total}')],
     [sg.Text(f'Peso Total: {peso_total}')],
-    [sg.Push(), sg.Button('Sair'), sg.Push()]
+    [sg.Push(), sg.Button('Sair'), sg.Push(), sg.Button('Mostrar/Esconder Log'), sg.Push()],
+    [sg.Multiline(size=(60, 10), key='-LOG-', visible=False, autoscroll=True)]
 ]
 
 # Exibindo resultados
 janela_resultados = sg.Window('RESULTADOS', layout=tela_resultados)
-while True:
-    e, v = janela_resultados.read()
 
+log_visible = False
+
+while True:
+    e, v = janela_resultados.read(timeout=1)
     if e == sg.WINDOW_CLOSED or e == 'Sair':
         janela_resultados.close()
         break
+    if e == 'Mostrar/Esconder Log':
+        log_visible = not log_visible
+        janela_resultados['-LOG-'].update(value='\n'.join(log), visible=log_visible)
+        janela_resultados.refresh()
