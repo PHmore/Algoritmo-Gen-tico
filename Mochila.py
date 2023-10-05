@@ -123,10 +123,10 @@ def tela_entrada ():
         [sg.Text('Pesos dos livros:'), sg.Push(), sg.Input(key='pesos')],
         [sg.Text('Valores dos livros:'), sg.Push(), sg.Input(key='valores')],
         [sg.Text('Capacidade da mochila:'), sg.Input('', (5, 1), key='capacidade_mochila')],
-        [sg.Text('Tamanho da população:'), sg.Input('', (5, 1), key='tamanho_populacao')],
+        [sg.Text('Tamanho da população: [>1]'), sg.Input('', (5, 1), key='tamanho_populacao')],
         [sg.Text('Taxa de mutação [entre 0 e 1]:'), sg.Input('', (5, 1), key='taxa_mutacao')],
         [sg.Text('Número de gerações:'), sg.Input('', (5, 1), key='geracoes')],
-        [sg.Push(), sg.Button('continuar',button_color=('white', 'DarkGreen')), sg.Push(), sg.Button('cancelar',button_color=('white', 'DarkRed')), sg.Push(),sg.Button('Trocar Tema')]
+        [sg.Push(), sg.Button('continuar',button_color=('white', 'DarkGreen')), sg.Push(), sg.Button('cancelar',button_color=('white', 'DarkRed')), sg.Push(),sg.Button('Trocar Tema',button_color=('white', 'RoyalBlue'))]
     ]
     return sg.Window('ALGORITMO GENÉTICO',tela_parametros)
 
@@ -161,7 +161,7 @@ while True:
         exit()
 
     if e == 'Trocar Tema':
-        sg.theme('Dark' if sg.theme() == 'Light' else 'Light')
+        sg.theme('Black' if sg.theme() == 'Reddit' else 'Reddit')
         janela_parametros.close()
         janela_parametros = tela_entrada()
     
@@ -175,7 +175,7 @@ while True:
         valores = v['valores'][:]
 
         tamanho_populacao = int(v['tamanho_populacao'])
-        taxa_mutacao = float(v['taxa_mutacao'])
+        taxa_mutacao = float(v['taxa_mutacao'].replace(',','.'))
         geracoes = int(v['geracoes'])
         capacidade_mochila = int(v['capacidade_mochila'])
 
@@ -191,8 +191,8 @@ while True:
             Error_pop('ERROR: Insira uma capacidade de mochila válida')
             continue
 
-        if (geracoes <= 0 or tamanho_populacao <= 0):
-            Error_pop('ERROR: Insira um valor valido em gerações/população')
+        if (geracoes <= 0 or tamanho_populacao <= 1):
+            Error_pop('ERROR: Insira um valor valido em gerações/população\nInsira um valor em população > 1')
             continue
 
         janela_parametros.close()
@@ -204,7 +204,7 @@ tela_aguarde = [
     [sg.ProgressBar(geracoes, orientation='h', size=(20, 20), key='progressbar',bar_color=('DarkGreen','LightGrey'))]
 ]
 
-Carregamento = sg.Window('Barra de Progresso', tela_aguarde)
+Carregamento = sg.Window('Aguarde', tela_aguarde)
 
 # Janela de histórico
 log_layout = [
@@ -270,7 +270,7 @@ tela_resultados = [
     [sg.Text(f'Melhor Indivíduo: {melhor_cromossomo}')],
     [sg.Text(f'Valor Total: {valor_total}')],
     [sg.Text(f'Peso Total: {peso_total}')],
-    [sg.Push(),  sg.Push(), sg.Button('Mostrar/Esconder Log'),sg.Button('Sair',button_color=('white', 'DarkRed')), sg.Push()],
+    [sg.Push(),  sg.Push(), sg.Button('Mostrar/Esconder Log',button_color=('white', 'RoyalBlue')),sg.Button('Sair',button_color=('white', 'DarkRed')), sg.Push()],
     [sg.Multiline(size=(60, 10), key='-LOG-', visible=False, autoscroll=True,background_color=('black'),text_color=('white'))]
 ]
 
