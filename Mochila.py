@@ -43,7 +43,7 @@ def converter_int(string):  # Converte os elementos que foram lidos como string 
     for item in string:
         lista_inteira.append(int(item))
 
-    print(lista_inteira)
+    #print(lista_inteira)
     return lista_inteira
 
 
@@ -75,9 +75,9 @@ def fitness(cromossomo):
 
     soma_pesos = soma_valores = 0
     for d in range(len(cromossomo)):
-        print (d)
-        print (cromossomo)
-        print (pesos)
+        #print (d)
+        #print (cromossomo)
+        #print (pesos)
         if cromossomo[d] == 1:
             soma_pesos += pesos[d]
             soma_valores += valores[d]
@@ -174,7 +174,7 @@ pesos = converter_int(pesos)
 valores = converter_int(valores)
 
 # Inicializando a população
-print(f'Printando pesos', pesos)
+#print(f'Printando pesos', pesos)
 populacao = [[random.choice([0, 1]) for _ in range(len(pesos))] for _ in range(tamanho_populacao)]
 
 # Algoritmo genético
