@@ -1,3 +1,25 @@
+
+#! Documentar o que cada função faz de forma mais detalhada
+
+#* Resolver bugs relacionados a números de base maior que 10 em pesos, valor, população, mochila.
+#* Aparentemente o erro relacionado a pesos é como o número maior que 10 está se comportando na lista
+#* O problema relacionado aos números maiores que 10 está inteiramente na definição do cromossomo e no uso de len para ler string
+#*pois o número 11 é reconhecido como 2 1s gerando assim um cromossomo erroneo pois terá dois genes
+#* Resolvido utilizando a conversão para lista inteira antes da definição da população inicial
+
+#! Existe um erro no crossover que acontece quando o cromossomo possui somente um gene
+
+#! Caso a mutação seja grande a casos de printar como resultado um cromossomo que não respeita a função fitness
+#!ou seja possui peso maior que permitido
+#! generalizando pois o erro pode não está somente na mutação o que aparentemente é verdade. 
+#! Há casos onde o cromossomo escolhido ultrapassa o limite da mochila
+
+#! Verificar como a taxa de mutação está se comportando e se está agindo corretamente
+
+#* Resolver erro aparecendo ao fechar ou cancelar: resolvido utilizando exit()
+
+#! Consertar identação no aparecimento do log
+
 from PySimpleGUI import PySimpleGUI as sg
 import random
 
@@ -21,6 +43,7 @@ def converter_int(string):  # Converte os elementos que foram lidos como string 
     for item in string:
         lista_inteira.append(int(item))
 
+    print(lista_inteira)
     return lista_inteira
 
 
@@ -52,6 +75,9 @@ def fitness(cromossomo):
 
     soma_pesos = soma_valores = 0
     for d in range(len(cromossomo)):
+        print (d)
+        print (cromossomo)
+        print (pesos)
         if cromossomo[d] == 1:
             soma_pesos += pesos[d]
             soma_valores += valores[d]
@@ -148,9 +174,11 @@ pesos = converter_int(pesos)
 valores = converter_int(valores)
 
 # Inicializando a população
+print(f'Printando pesos', pesos)
 populacao = [[random.choice([0, 1]) for _ in range(len(pesos))] for _ in range(tamanho_populacao)]
 
 # Algoritmo genético
+
 for geracao in range(geracoes):
     formatar_log(populacao)
     log.append(f'- População da geração {geracao}:\n {populacao}\n')
@@ -164,10 +192,10 @@ for geracao in range(geracoes):
     populacao = sorted(populacao, key=lambda x: fitness(x), reverse=True)
     nova_populacao = []
 
-    # Mantém os melhores cromossomos
+        # Mantém os melhores cromossomos
     nova_populacao.extend(populacao[:2])
 
-    # Geração de novos indivíduos através de crossover e mutação
+        # Geração de novos indivíduos através de crossover e mutação
     for _ in range(tamanho_populacao // 2):
         pai1, pai2 = random.choice(populacao[:5]), random.choice(populacao[:5])
         filho1, filho2 = crossover(pai1, pai2)
@@ -180,14 +208,16 @@ for geracao in range(geracoes):
     Carregamento['progressbar'].update(geracao+1)
 
     populacao = nova_populacao
+Carregamento.close()
+
 
 Carregamento.close()
 
-# Obtendo o melhor cromossomo após as gerações
+    # Obtendo o melhor cromossomo após as gerações
 melhor_cromossomo = max(populacao, key=fitness)
 melhor_cromossomo = [1 if gene else 0 for gene in melhor_cromossomo]
 
-# Cálculo do total de peso e valor dos livros selecionados geneticamente
+    # Cálculo do total de peso e valor dos livros selecionados geneticamente
 valor_total = peso_total = 0
 for c in range(len(melhor_cromossomo)):
     if melhor_cromossomo[c] == 1:
