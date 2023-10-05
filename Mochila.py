@@ -25,7 +25,6 @@ import random
 
 sg.theme('Reddit')
 
-
 def converter_int(string):  # Converte os elementos que foram lidos como string na interface em uma lista de inteiros
 
     """
@@ -82,7 +81,7 @@ def fitness(cromossomo):
             soma_pesos += pesos[d]
             soma_valores += valores[d]
 
-    if soma_pesos > capacidade_mochila:
+    if soma_pesos > capacidade_mochila or soma_pesos < min(pesos):
         return 0
     else:
         return soma_valores
@@ -124,10 +123,23 @@ tela_parametros = [
     [sg.Text('Valores dos livros:'), sg.Push(), sg.Input(key='valores')],
     [sg.Text('Capacidade da mochila:'), sg.Input('', (5, 1), key='capacidade_mochila')],
     [sg.Text('Tamanho da população:'), sg.Input('', (5, 1), key='tamanho_populacao')],
-    [sg.Text('Taxa de mutação:'), sg.Input('', (5, 1), key='taxa_mutacao')],
+    [sg.Text('Taxa de mutação [entre 0 e 1]:'), sg.Input('', (5, 1), key='taxa_mutacao')],
     [sg.Text('Número de gerações:'), sg.Input('', (5, 1), key='geracoes')],
-    [sg.Push(), sg.Button('continuar'), sg.Push(), sg.Button('cancelar'), sg.Push()]
+    [sg.Push(), sg.Button('continuar',button_color=('white', 'DarkGreen')), sg.Push(), sg.Button('cancelar',button_color=('white', 'DarkRed')), sg.Push()]
 ]
+
+def Error_pop (m_error):
+    tela_erro = [
+    [sg.Text(m_error)],
+    [sg.Push(),sg.Button('OK', button_color=('white', 'DarkGreen')),sg.Push()]
+]
+    Error_view = sg.Window('Erro', tela_erro)
+    while True:
+        event, values = Error_view.read()
+        if event == sg.WINDOW_CLOSED or event == 'OK':
+            break
+
+    Error_view.close()
 
 # Definindo os parâmetros do problema
 pesos = list()
@@ -145,19 +157,42 @@ while True:
         janela_parametros.close()
         exit()
     if e == 'continuar':
+
+        if not (v['tamanho_populacao'] and v['taxa_mutacao'] and v['valores'][:] and v['capacidade_mochila'] and v['pesos'][:] and v['geracoes']):
+            Error_pop('ERROR: Preencha todos os campos')
+            continue
+
         pesos = v['pesos'][:]
         valores = v['valores'][:]
-        capacidade_mochila = int(v['capacidade_mochila'])
+
         tamanho_populacao = int(v['tamanho_populacao'])
         taxa_mutacao = float(v['taxa_mutacao'])
         geracoes = int(v['geracoes'])
+        capacidade_mochila = int(v['capacidade_mochila'])
+
+        pesos = converter_int(pesos)
+        valores = converter_int(valores)
+
+        if (len(pesos) != len(valores) or len(pesos) <= 1 ):
+            Error_pop('ERROR: A quantidade de pesos e valores devem ser a mesmas\nA quantidade deve ser maior que 1')
+            continue            
+
+
+        if (capacidade_mochila < min(pesos)):
+            Error_pop('ERROR: Insira uma capacidade de mochila válida')
+            continue
+
+        if (geracoes <= 0 or tamanho_populacao <= 0):
+            Error_pop('ERROR: Insira um valor valido em gerações/população')
+            continue
+
         janela_parametros.close()
         break
 
 # Barra de progresso
 tela_aguarde = [
     [sg.Text('Progresso')],
-    [sg.ProgressBar(geracoes, orientation='h', size=(20, 20), key='progressbar')]
+    [sg.ProgressBar(geracoes, orientation='h', size=(20, 20), key='progressbar',bar_color=('DarkGreen','LightGrey'))]
 ]
 
 Carregamento = sg.Window('Barra de Progresso', tela_aguarde)
@@ -169,9 +204,6 @@ log_layout = [
 
 janela_logs = sg.Window('LOG', layout=log_layout)
 log = []
-
-pesos = converter_int(pesos)
-valores = converter_int(valores)
 
 # Inicializando a população
 #print(f'Printando pesos', pesos)
@@ -229,8 +261,8 @@ tela_resultados = [
     [sg.Text(f'Melhor Indivíduo: {melhor_cromossomo}')],
     [sg.Text(f'Valor Total: {valor_total}')],
     [sg.Text(f'Peso Total: {peso_total}')],
-    [sg.Push(), sg.Button('Sair'), sg.Push(), sg.Button('Mostrar/Esconder Log'), sg.Push()],
-    [sg.Multiline(size=(60, 10), key='-LOG-', visible=False, autoscroll=True)]
+    [sg.Push(),  sg.Push(), sg.Button('Mostrar/Esconder Log'),sg.Button('Sair',button_color=('white', 'DarkRed')), sg.Push()],
+    [sg.Multiline(size=(60, 10), key='-LOG-', visible=False, autoscroll=True,background_color=('black'),text_color=('white'))]
 ]
 
 # Exibindo resultados
