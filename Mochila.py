@@ -116,17 +116,21 @@ def mutacao(individuo):
     individuo[posicao] = not individuo[posicao]
     return individuo
 
+def tela_entrada ():
 
 # Definição do layout da janela de inserção de dados
-tela_parametros = [
-    [sg.Text('Pesos dos livros:'), sg.Push(), sg.Input(key='pesos')],
-    [sg.Text('Valores dos livros:'), sg.Push(), sg.Input(key='valores')],
-    [sg.Text('Capacidade da mochila:'), sg.Input('', (5, 1), key='capacidade_mochila')],
-    [sg.Text('Tamanho da população:'), sg.Input('', (5, 1), key='tamanho_populacao')],
-    [sg.Text('Taxa de mutação [entre 0 e 1]:'), sg.Input('', (5, 1), key='taxa_mutacao')],
-    [sg.Text('Número de gerações:'), sg.Input('', (5, 1), key='geracoes')],
-    [sg.Push(), sg.Button('continuar',button_color=('white', 'DarkGreen')), sg.Push(), sg.Button('cancelar',button_color=('white', 'DarkRed')), sg.Push()]
-]
+    tela_parametros = [
+        [sg.Text('Pesos dos livros:'), sg.Push(), sg.Input(key='pesos')],
+        [sg.Text('Valores dos livros:'), sg.Push(), sg.Input(key='valores')],
+        [sg.Text('Capacidade da mochila:'), sg.Input('', (5, 1), key='capacidade_mochila')],
+        [sg.Text('Tamanho da população:'), sg.Input('', (5, 1), key='tamanho_populacao')],
+        [sg.Text('Taxa de mutação [entre 0 e 1]:'), sg.Input('', (5, 1), key='taxa_mutacao')],
+        [sg.Text('Número de gerações:'), sg.Input('', (5, 1), key='geracoes')],
+        [sg.Push(), sg.Button('continuar',button_color=('white', 'DarkGreen')), sg.Push(), sg.Button('cancelar',button_color=('white', 'DarkRed')), sg.Push(),sg.Button('Trocar Tema')]
+    ]
+    return sg.Window('ALGORITMO GENÉTICO',tela_parametros)
+
+janela_parametros = tela_entrada()
 
 def Error_pop (m_error):
     tela_erro = [
@@ -149,13 +153,18 @@ tamanho_populacao = 1  # Número de indivíduos (cromossomos) por população
 taxa_mutacao = 0.1
 geracoes = 1
 
-janela_parametros = sg.Window('ALGORITMO GENÉTICO', layout=tela_parametros)
 while True:
     e, v = janela_parametros.read()
 
     if e == sg.WINDOW_CLOSED or e == 'cancelar':
         janela_parametros.close()
         exit()
+
+    if e == 'Trocar Tema':
+        sg.theme('Dark' if sg.theme() == 'Light' else 'Light')
+        janela_parametros.close()
+        janela_parametros = tela_entrada()
+    
     if e == 'continuar':
 
         if not (v['tamanho_populacao'] and v['taxa_mutacao'] and v['valores'][:] and v['capacidade_mochila'] and v['pesos'][:] and v['geracoes']):
