@@ -1,31 +1,13 @@
 
-#! Documentar o que cada função faz de forma mais detalhada
-
-#* Resolver bugs relacionados a números de base maior que 10 em pesos, valor, população, mochila.
-#* Aparentemente o erro relacionado a pesos é como o número maior que 10 está se comportando na lista
-#* O problema relacionado aos números maiores que 10 está inteiramente na definição do cromossomo e no uso de len para ler string
-#*pois o número 11 é reconhecido como 2 1s gerando assim um cromossomo erroneo pois terá dois genes
-#* Resolvido utilizando a conversão para lista inteira antes da definição da população inicial
-
-#! Existe um erro no crossover que acontece quando o cromossomo possui somente um gene
-
-#! Caso a mutação seja grande a casos de printar como resultado um cromossomo que não respeita a função fitness
-#!ou seja possui peso maior que permitido
-#! generalizando pois o erro pode não está somente na mutação o que aparentemente é verdade. 
-#! Há casos onde o cromossomo escolhido ultrapassa o limite da mochila
-
-#! Verificar como a taxa de mutação está se comportando e se está agindo corretamente
-
-#* Resolver erro aparecendo ao fechar ou cancelar: resolvido utilizando exit()
-
-#! Consertar identação no aparecimento do log
+#!Necessário instalar o PySimpleGUI para que o código funcione
+#!OBS: Por ser feito uma divisão por 2 o tamanho da população sempre assumirá um tamanho par > 4 
 
 from PySimpleGUI import PySimpleGUI as sg
 import random
 
 sg.theme('Reddit')
 
-def converter_int(string):  # Converte os elementos que foram lidos como string na interface em uma lista de inteiros
+def converter_int(string):
 
     """
     A função converte a lista de strings lida como entrada pela interface em uma lista de inteiros, para que os cálculos
@@ -45,7 +27,6 @@ def converter_int(string):  # Converte os elementos que foram lidos como string 
     #print(lista_inteira)
     return lista_inteira
 
-
 def formatar_log(lista):
 
     """
@@ -61,8 +42,6 @@ def formatar_log(lista):
             elif i[j] is False:
                 i[j] = 0
 
-
-# Função onde recebe o cromossomo ler os genes e retorna o FITNESS
 def fitness(cromossomo):
 
     """
@@ -74,9 +53,6 @@ def fitness(cromossomo):
 
     soma_pesos = soma_valores = 0
     for d in range(len(cromossomo)):
-        #print (d)
-        #print (cromossomo)
-        #print (pesos)
         if cromossomo[d] == 1:
             soma_pesos += pesos[d]
             soma_valores += valores[d]
@@ -86,8 +62,6 @@ def fitness(cromossomo):
     else:
         return soma_valores
 
-
-# Função de cruzamento genético
 def crossover(pai1, pai2):
 
     """
@@ -102,8 +76,6 @@ def crossover(pai1, pai2):
     filho2 = pai2[:ponto_corte] + pai1[ponto_corte:]
     return filho1, filho2
 
-
-# Função de mutação
 def mutacao(individuo):
 
     """
@@ -192,7 +164,7 @@ while True:
             continue
 
         if (geracoes <= 0 or tamanho_populacao <= 1):
-            Error_pop('ERROR: Insira um valor valido em gerações/população\nInsira um valor em população > 1')
+            Error_pop('ERROR: Insira um valor valido em gerações/população\nInsira um valor em população > 1, obs a população assumirá um valor par > 4 ao final')
             continue
 
         janela_parametros.close()
@@ -215,7 +187,6 @@ janela_logs = sg.Window('LOG', layout=log_layout)
 log = []
 
 # Inicializando a população
-#print(f'Printando pesos', pesos)
 populacao = [[random.choice([0, 1]) for _ in range(len(pesos))] for _ in range(tamanho_populacao)]
 
 # Algoritmo genético
