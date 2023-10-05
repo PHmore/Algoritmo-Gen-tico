@@ -24,7 +24,6 @@ def converter_int(string):
     for item in string:
         lista_inteira.append(int(item))
 
-    #print(lista_inteira)
     return lista_inteira
 
 def formatar_log(lista):
